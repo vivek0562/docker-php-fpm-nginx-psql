@@ -1,0 +1,32 @@
+services:
+  web:
+    # image: nginx:latest 
+    build:
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+
+  app:
+    build:
+      dockerfile: ./php/Dockerfile
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - db
+    environment:
+      POSTGRES_PASSWORD: ${PSQL_PASS}
+      POSTGRES_USER: ${PSQL_USER}
+
+  db:
+    image: postgres:15.0
+    volumes:
+      - /homes/vivekkumar/psql-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_DATABASE: ${PSQL_DATABASE}
+      POSTGRES_PASSWORD: ${PSQL_PASS}
+      POSTGRES_USER: ${PSQL_USER}

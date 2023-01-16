@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: nginx/Dockerfile
     ports:
-      - "80:80"
+      - "8088:80"
     depends_on:
       - app
 
@@ -14,16 +14,18 @@ services:
     build:
       context: .
       dockerfile: php/Dockerfile
-    volumes:
-      - ./app:/var/www/html
     depends_on:
       - db
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./app/public:/var/www/html/public
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: docker
 
   db:
-    image: postgres
+    image: postgres:12
     volumes:
       - /root/psql-data:/var/lib/postgresql/data
     ports:
